@@ -95,11 +95,15 @@ def get_reset_password_token() -> str:
 @app.route('/reset_password', methods=['PUT'])
 def update_password() -> str:
     '''
-        function resets password
+        Update the user's password if the reset token is valid.
     '''
     email = request.form.get('email')
     reset_token = request.form.get('reset_token')
     new_password = request.form.get('new_password')
+
+    if not email or not reset_token or not new_password:
+        # Si des données sont manquantes, retournez une erreur 400
+        abort(400, description="Missing email, reset_token, or new_password")
 
     try:
         AUTH.update_password(reset_token, new_password)
